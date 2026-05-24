@@ -9,9 +9,16 @@ import { cleanupIdempotencyKeys } from '@/lib/idempotency'
  */
 export async function POST(request: NextRequest) {
   try {
-    // Verify cron secret
-    const cronSecret = request.headers.get('x-cron-secret')
-    if (cronSecret !== process.env.CRON_SECRET) {
+    // Vercel Cron sends Authorization: Bearer <CRON_SECRET> when CRON_SECRET is set.
+    // x-cron-secret is kept for manual/local calls.
+    const cronSecret = process.env.CRON_SECRET
+    const authHeader = request.headers.get('authorization')
+    const xCronSecret = request.headers.get('x-cron-secret')
+    const isAuthorized =
+      cronSecret &&
+      (authHeader === `Bearer ${cronSecret}` || xCronSecret === cronSecret)
+
+    if (!isAuthorized) {
       return NextResponse.json(
         { error: 'Unauthorized' },
         { status: 401 }
