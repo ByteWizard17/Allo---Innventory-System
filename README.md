@@ -228,7 +228,7 @@ const result = await prisma.$transaction(async (tx) => {
   "crons": [
     {
       "path": "/api/internal/cleanup",
-      "schedule": "*/5 * * * *"
+      "schedule": "*/0 * * * *"
     }
   ]
 }
@@ -346,7 +346,7 @@ npm start
 
 - Verify cron job runs: Check Vercel dashboard → Cron Jobs
 - Seed database: `npm run prisma:seed`
-- Visit live URL to test the application
+- Visit live URL to test the application https://allo-innventory-system-1b5r.vercel.app/
 
 ## Testing
 
